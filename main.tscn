@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3 uid="uid://b51go5ml86f20"]
+
+[ext_resource type="Script" path="res://Main.gd" id="1_fsa44"]
+[ext_resource type="PackedScene" uid="uid://ykrjitmmi2h1" path="res://assets/valve_hand_models/left_hand.glb" id="2_udk1h"]
+[ext_resource type="PackedScene" uid="uid://d4baiw4rbcol" path="res://assets/valve_hand_models/right_hand.glb" id="3_kbx8c"]
+[ext_resource type="Texture2D" uid="uid://dcr0p5yjpyhwq" path="res://assets/Floor.png" id="4_nhusm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ve2yd"]
+albedo_texture = ExtResource("4_nhusm")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ao2o8"]
+size = Vector2(100, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_451m0"]
+size = Vector3(100, 1, 100)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_fsa44")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 10, 0)
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -0.5)
+
+[node name="LeftHand" type="OpenXRHand" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5)
+hand_skeleton = NodePath("left_hand/Armature_001/Skeleton3D")
+
+[node name="left_hand" parent="XROrigin3D/LeftHand" instance=ExtResource("2_udk1h")]
+
+[node name="RightHand" type="OpenXRHand" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
+hand = 1
+hand_skeleton = NodePath("right_hand/Armature/Skeleton3D")
+
+[node name="right_hand" parent="XROrigin3D/RightHand" instance=ExtResource("3_kbx8c")]
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+material_override = SubResource("StandardMaterial3D_ve2yd")
+mesh = SubResource("PlaneMesh_ao2o8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_451m0")
